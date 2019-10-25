@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Sort.Direction;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hengyue.entity.Log;
+import com.hengyue.entity.SaleList;
 import com.hengyue.entity.CustomerReturnList;
 import com.hengyue.entity.CustomerReturnListGoods;
 import com.hengyue.entity.User;
@@ -103,7 +105,7 @@ public class CustomerReturnListAdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/list")
-	@RequiresPermissions(value = "客户退货查询")
+	@RequiresPermissions(value = {"客户退货查询","客户统计"}, logical = Logical.OR)
 	public Map<String, Object> list(CustomerReturnList customerReturnList) throws Exception{
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<CustomerReturnList> customerReturnListList = customerReturnListService.list(customerReturnList, Direction.DESC, "customerReturnDate");
@@ -131,6 +133,27 @@ public class CustomerReturnListAdminController {
 		return map;
 	}
 	/**
+	 * 根据条件获取商品销售信息
+	 * @param customerReturnList
+	 * @param customerReturnListGoods
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/listCount")
+	@RequiresPermissions(value="商品销售统计")
+	public Map<String,Object> listCount(CustomerReturnList customerReturnList,CustomerReturnListGoods customerReturnListGoods)throws Exception{
+		Map<String,Object> resultMap=new HashMap<>();
+		List<CustomerReturnList> customerReturnListList=customerReturnListService.list(customerReturnList, Direction.DESC, "customerReturnDate");
+		for(CustomerReturnList cr:customerReturnListList){
+			customerReturnListGoods.setCustomerReturnList(cr);
+			List<CustomerReturnListGoods> crgList=customerReturnListGoodsService.list(customerReturnListGoods);
+			cr.setCustomerReturnListGoodsList(crgList);
+		}
+		resultMap.put("rows", customerReturnListList);
+		logService.save(new Log(Log.SEARCH_ACTION,"商品销售统计查询"));
+		return resultMap;
+	}
+	/**
 	 * 删除客户退货
 	 * @param id
 	 * @return
@@ -145,5 +168,21 @@ public class CustomerReturnListAdminController {
 		customerReturnListService.delete(id);
 		return map;
 	}
-	
+	/**
+	 * 修改单支付状客户退货态
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/update")
+	@RequiresPermissions(value = "客户统计")
+	public Map<String, Object> update(Integer id) throws Exception{
+		Map<String, Object> map = new HashMap<String, Object>();
+		CustomerReturnList customerReturnList = customerReturnListService.findById(id);
+		customerReturnList.setState(1);
+		customerReturnListService.update(customerReturnList);
+		map.put("success", true);
+		logService.save(new Log(Log.UPDATE_ACTION,"修改进货单支付状态" + customerReturnList));
+		return map;
+	}
 }

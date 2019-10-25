@@ -220,4 +220,10 @@ public class GoodsServiceImpl implements GoodsService {
 		return count;
 	}
 
+	@Override
+	public List<Goods> listAlarm() {
+		// TODO Auto-generated method stub
+		return goodsRepository.listAlarm();
+	}
+
 }

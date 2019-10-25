@@ -8,10 +8,17 @@ import com.hengyue.entity.ReturnListGoods;
 public interface ReturnListGoodsService {
 
 	/**
-	 * 通过进货单id查找退货单商品
+	 * 通过退货单id查找退货单商品
 	 * 
 	 * @param id
 	 * @return
 	 */
 	public List<ReturnListGoods> listByReturnListId(Integer id);
+	/**
+	 * 根据条件查询退货单商品
+	 * @param returnListGoods
+	 * @return
+	 */
+	public List<ReturnListGoods> list(ReturnListGoods returnListGoods);
+	
 }

@@ -3,6 +3,7 @@ package com.hengyue.respository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,7 +14,7 @@ import com.hengyue.entity.SaleListGoods;
  * @author 章家宝
  *
  */
-public interface SaleListGoodsRepository extends JpaRepository<SaleListGoods, Integer> {
+public interface SaleListGoodsRepository extends JpaRepository<SaleListGoods, Integer>, JpaSpecificationExecutor<SaleListGoods> {
 
 	/**
 	 * 通过销售id查找销售商品

@@ -50,7 +50,7 @@ public class GoodsAdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/list")
-	@RequiresPermissions(value= {"商品管理", "进货入库"}, logical = Logical.OR)
+	@RequiresPermissions(value= {"商品管理", "进货入库","销售出库", "客户退货","商品报损", "商品报溢"}, logical = Logical.OR)
 	public Map<String, Object> list(Goods goods, @RequestParam(value = "page", required = false)Integer page,
 			@RequestParam(value = "rows", required = false)Integer rows) throws Exception{
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -62,6 +62,19 @@ public class GoodsAdminController {
 		return map;
 	}
 	/**
+	 * 查询库存商品报警
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/listAlarm")
+	@RequiresPermissions(value= "库存报警")
+	public Map<String, Object> listAlarm() throws Exception{
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("rows", goodsService.listAlarm());
+		logService.save(new Log(Log.SEARCH_ACTION, "查询库存商品报警"));
+		return map;
+	}
+	/** 
 	 * 分页查询商品库存信息
 	 * @param goods
 	 * @param page

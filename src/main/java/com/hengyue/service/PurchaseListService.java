@@ -47,4 +47,9 @@ public interface PurchaseListService {
 	 * @param id
 	 */
 	public void delete(Integer id);
+	/**
+	 * 更新进货单
+	 * @param purchaseList
+	 */
+	public void update(PurchaseList purchaseList);
 }

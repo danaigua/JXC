@@ -1,6 +1,7 @@
 package com.hengyue.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,6 +54,12 @@ public class SaleList {
 	
 	@Column(length = 1000)
 	private String remarks;			//备注
+	
+	@Transient
+	private List<SaleListGoods> saleListGoodsList = null;
+	
+	
+
 
 	public Integer getId() {
 		return id;
@@ -148,6 +155,14 @@ public class SaleList {
 		return "SaleList [id=" + id + ", SaleNumber=" + saleNumber + ", customer=" + customer + ", saleDate=" + saleDate
 				+ ", bSaleDate=" + bSaleDate + ", eSaleDate=" + eSaleDate + ", amountPayable=" + amountPayable
 				+ ", amountPaid=" + amountPaid + ", state=" + state + ", user=" + user + ", remarks=" + remarks + "]";
+	}
+
+	public List<SaleListGoods> getSaleListGoodsList() {
+		return saleListGoodsList;
+	}
+
+	public void setSaleListGoodsList(List<SaleListGoods> saleListGoodsList) {
+		this.saleListGoodsList = saleListGoodsList;
 	}
 	
 	

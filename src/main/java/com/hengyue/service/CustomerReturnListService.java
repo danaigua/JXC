@@ -47,4 +47,6 @@ public interface CustomerReturnListService {
 	 * @param id
 	 */
 	public void delete(Integer id);
+	
+	public void update(CustomerReturnList saleList);
 }

@@ -117,4 +117,11 @@ public class CustomerReturnListServiceImpl implements CustomerReturnListService 
 		customerReturnListGoodsRepository.deleteByCustomerReturnListId(id);
 		customerReturnListRepository.deleteById(id);
 	}
+
+
+	@Override
+	public void update(CustomerReturnList customerReturnList) {
+		// TODO Auto-generated method stub
+		customerReturnListRepository.save(customerReturnList);
+	}
 }

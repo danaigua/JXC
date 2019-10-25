@@ -47,4 +47,9 @@ public interface ReturnListService {
 	 * @return
 	 */
 	public ReturnList findById(Integer id);
+	/**
+	 * 更新退货单
+	 * @param returnList
+	 */
+	public void update(ReturnList returnList);
 }

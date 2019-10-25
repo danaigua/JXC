@@ -93,4 +93,11 @@ public interface GoodsService {
 	 * @return
 	 */
 	public Long getCountHasInventoryQuantityByCodeOrName(String codeOrName);
+	
+	/**
+	 * 获取报警的商品
+	 * @return
+	 */
+	public List<Goods> listAlarm();
+
 }

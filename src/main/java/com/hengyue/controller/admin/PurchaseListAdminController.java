@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Sort.Direction;
@@ -103,7 +104,7 @@ public class PurchaseListAdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/list")
-	@RequiresPermissions(value = "进货单据查询")
+	@RequiresPermissions(value = {"进货单据查询", "供应商统计"}, logical = Logical.OR)
 	public Map<String, Object> list(PurchaseList purchaseList) throws Exception{
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<PurchaseList> purchaseListList = purchaseListService.list(purchaseList, Direction.DESC, "purchaseDate");
@@ -131,6 +132,27 @@ public class PurchaseListAdminController {
 		return map;
 	}
 	/**
+	 * 根据条件获取商品采购信息
+	 * @param purchaseList
+	 * @param purchaseListGoods
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/listCount")
+	@RequiresPermissions(value="商品采购统计")
+	public Map<String,Object> listCount(PurchaseList purchaseList,PurchaseListGoods purchaseListGoods)throws Exception{
+		Map<String,Object> resultMap=new HashMap<>();
+		List<PurchaseList> purchaseListList=purchaseListService.list(purchaseList, Direction.DESC, "purchaseDate");
+		for(PurchaseList pl:purchaseListList){
+			purchaseListGoods.setPurchaseList(pl);
+			List<PurchaseListGoods> plgList=purchaseListGoodsService.list(purchaseListGoods);
+			pl.setPurchaseListGoodsList(plgList);
+		}
+		resultMap.put("rows", purchaseListList);
+		logService.save(new Log(Log.SEARCH_ACTION,"商品采购统计查询"));
+		return resultMap;
+	}
+	/**
 	 * 删除进货单
 	 * @param id
 	 * @return
@@ -145,5 +167,21 @@ public class PurchaseListAdminController {
 		purchaseListService.delete(id);
 		return map;
 	}
-	
+	/**
+	 * 修改进货单支付状态
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/update")
+	@RequiresPermissions(value = "供应商统计")
+	public Map<String, Object> update(Integer id) throws Exception{
+		Map<String, Object> map = new HashMap<String, Object>();
+		PurchaseList purchaseList = purchaseListService.findById(id);
+		purchaseList.setState(1);
+		purchaseListService.update(purchaseList);
+		map.put("success", true);
+		logService.save(new Log(Log.UPDATE_ACTION,"修改进货单支付状态" + purchaseList));
+		return map;
+	}
 }

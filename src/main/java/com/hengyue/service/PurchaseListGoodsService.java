@@ -13,4 +13,10 @@ public interface PurchaseListGoodsService {
 	 * @return
 	 */
 	public List<PurchaseListGoods> listByPurchaseListId(Integer id);
+	/**
+	 * 根据条件查询进货单商品
+	 * @param purchaseListGoods
+	 * @return
+	 */
+	public List<PurchaseListGoods> list(PurchaseListGoods purchaseListGoods);
 }

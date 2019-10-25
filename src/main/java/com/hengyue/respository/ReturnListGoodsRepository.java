@@ -3,6 +3,7 @@ package com.hengyue.respository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,7 +14,7 @@ import com.hengyue.entity.ReturnListGoods;
  * @author 章家宝
  *
  */
-public interface ReturnListGoodsRepository extends JpaRepository<ReturnListGoods, Integer> {
+public interface ReturnListGoodsRepository extends JpaRepository<ReturnListGoods, Integer>, JpaSpecificationExecutor<ReturnListGoods> {
 
 	/**
 	 * 通过退货单id查找退货单商品

@@ -20,4 +20,11 @@ public interface SaleListGoodsService {
 	 * @return
 	 */
 	public Integer getTotalByGoodsId(Integer goodsId);
+	
+	/**
+	 * 根据条件查询销售单商品
+	 * @param saleListGoods
+	 * @return
+	 */
+	public List<SaleListGoods> list(SaleListGoods saleListGoods);
 }

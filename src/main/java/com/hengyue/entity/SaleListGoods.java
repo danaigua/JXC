@@ -9,6 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * 销售单商品实体
  * @author 章家宝
@@ -22,6 +24,7 @@ public class SaleListGoods {
 	@GeneratedValue
 	private Integer id;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "saleListId")
 	private SaleList saleList;		//销售单
@@ -52,6 +55,19 @@ public class SaleListGoods {
 	
 	@Transient
 	private Integer typeId;		//类别id
+	
+	@Transient
+	private String codeOrName;
+	
+	
+
+	public String getCodeOrName() {
+		return codeOrName;
+	}
+
+	public void setCodeOrName(String codeOrName) {
+		this.codeOrName = codeOrName;
+	}
 
 	public Integer getId() {
 		return id;

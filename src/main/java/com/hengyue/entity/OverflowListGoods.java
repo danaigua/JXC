@@ -10,24 +10,22 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 /**
- * 进货单商品实体
+ * 商品报溢商品实体
  * @author 章家宝
  *
  */
 @Entity
-@Table(name = "t_purchaseListGoods")
-public class PurchaseListGoods {
+@Table(name = "t_overflowListGoods")
+public class OverflowListGoods {
 
 	@Id
 	@GeneratedValue
 	private Integer id;
 	
-	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "purchaseListId")
-	private PurchaseList purchaseList;		//进货单
+	@JoinColumn(name = "overflowListId")
+	private OverflowList overflowList;		//商品报溢
 	
 	@Column(length=50)
 	private String code; // 商品编码
@@ -56,16 +54,6 @@ public class PurchaseListGoods {
 	@Transient
 	private Integer typeId;		//类别id
 	
-	@Transient
-	private String codeOrName;
-
-	public String getCodeOrName() {
-		return codeOrName;
-	}
-
-	public void setCodeOrName(String codeOrName) {
-		this.codeOrName = codeOrName;
-	}
 
 	public Integer getId() {
 		return id;
@@ -75,12 +63,12 @@ public class PurchaseListGoods {
 		this.id = id;
 	}
 
-	public PurchaseList getPurchaseList() {
-		return purchaseList;
+	public OverflowList getOverflowList() {
+		return overflowList;
 	}
 
-	public void setPurchaseList(PurchaseList purchaseList) {
-		this.purchaseList = purchaseList;
+	public void setOverflowList(OverflowList overflowList) {
+		this.overflowList = overflowList;
 	}
 
 	public String getCode() {
@@ -165,7 +153,7 @@ public class PurchaseListGoods {
 
 	@Override
 	public String toString() {
-		return "PurchaseListGoods [id=" + id + ", purchaseList=" + purchaseList + ", code=" + code + ", name=" + name
+		return "OverflowListGoods [id=" + id + ", overflowList=" + overflowList + ", code=" + code + ", name=" + name
 				+ ", model=" + model + ", type=" + type + ", goodsId=" + goodsId + ", unit=" + unit + ", price=" + price
 				+ ", num=" + num + ", total=" + total + ", typeId=" + typeId + "]";
 	}

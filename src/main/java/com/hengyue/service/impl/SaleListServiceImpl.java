@@ -117,4 +117,25 @@ public class SaleListServiceImpl implements SaleListService {
 		saleListGoodsRepository.deleteBySaleListId(id);
 		saleListRepository.deleteById(id);
 	}
+
+
+	@Override
+	public void update(SaleList saleList) {
+		// TODO Auto-generated method stub
+		saleListRepository.save(saleList);
+	}
+
+
+	@Override
+	public List<Object> countSaleByDay(String begin, String end) {
+		// TODO Auto-generated method stub
+		return saleListRepository.countSaleByDay(begin, end);
+	}
+
+
+	@Override
+	public List<Object> countSaleByMonth(String begin, String end) {
+		// TODO Auto-generated method stub
+		return saleListRepository.countSaleByMonth(begin, end);
+	}
 }

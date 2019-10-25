@@ -124,4 +124,11 @@ public class PurchaseListServiceImpl implements PurchaseListService {
 		purchaseListGoodsRepository.deleteByPurchaseListId(id);
 		purchaseListRepository.deleteById(id);
 	}
+
+
+	@Override
+	public void update(PurchaseList purchaseList) {
+		// TODO Auto-generated method stub
+		purchaseListRepository.save(purchaseList);
+	}
 }

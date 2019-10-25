@@ -44,7 +44,7 @@ public class GoodsTypeAdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/save")
-	@RequiresPermissions(value= {"商品管理", "进货入库", "销售出库", "客户退货"}, logical = Logical.OR)
+	@RequiresPermissions(value= {"商品管理", "进货入库", "销售出库", "客户退货","商品报损", "商品报溢", "商品采购统计"}, logical = Logical.OR)
 	public Map<String, Object> save(String name, Integer parentId) throws Exception{
 		Map<String, Object> map = new HashMap<String, Object>();
 		GoodsType goodsType = new GoodsType();
@@ -66,7 +66,7 @@ public class GoodsTypeAdminController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/delete")
-	@RequiresPermissions(value= {"商品管理", "进货入库","销售出库", "客户退货"}, logical = Logical.OR)
+	@RequiresPermissions(value= {"商品管理", "进货入库","销售出库", "客户退货","商品报损", "商品报溢"}, logical = Logical.OR)
 	public Map<String, Object> delete(Integer id) throws Exception{
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(goodsService.findByTypeId(id).size() == 0) {

@@ -1,6 +1,7 @@
 package com.hengyue.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -55,7 +56,11 @@ public class PurchaseList {
 	
 	@Column(length = 1000)
 	private String remarks;			//备注
+	
+	@Transient
+	private List<PurchaseListGoods> purchaseListGoodsList = null;//采购单商品集合
 
+	
 	public Integer getId() {
 		return id;
 	}
@@ -145,5 +150,20 @@ public class PurchaseList {
 		this.ePurchaseDate = ePurchaseDate;
 	}
 	
-	
+	public List<PurchaseListGoods> getPurchaseListGoodsList() {
+		return purchaseListGoodsList;
+	}
+
+	public void setPurchaseListGoodsList(List<PurchaseListGoods> purchaseListGoodsList) {
+		this.purchaseListGoodsList = purchaseListGoodsList;
+	}
+
+	@Override
+	public String toString() {
+		return "PurchaseList [id=" + id + ", purchaseNumber=" + purchaseNumber + ", supplier=" + supplier
+				+ ", purchaseDate=" + purchaseDate + ", bPurchaseDate=" + bPurchaseDate + ", ePurchaseDate="
+				+ ePurchaseDate + ", amountPayable=" + amountPayable + ", amountPaid=" + amountPaid + ", state=" + state
+				+ ", user=" + user + ", remarks=" + remarks + ", purchaseListGoodsList=" + purchaseListGoodsList + "]";
+	}
+
 }

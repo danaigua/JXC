@@ -20,4 +20,11 @@ public interface CustomerReturnListGoodsService {
 	 * @return
 	 */
 	public Integer getTotalByGoodsId(Integer goodsId);
+	
+	/**
+	 * 根据条件查询客户退货单商品
+	 * @param customerReturnListGoods
+	 * @return
+	 */
+	public List<CustomerReturnListGoods> list(CustomerReturnListGoods customerReturnListGoods);
 }

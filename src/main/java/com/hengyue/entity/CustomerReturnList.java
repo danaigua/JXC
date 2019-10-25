@@ -1,6 +1,7 @@
 package com.hengyue.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,6 +54,19 @@ public class CustomerReturnList {
 	
 	@Column(length = 1000)
 	private String remarks;			//备注
+	
+	@Transient
+	private List<CustomerReturnListGoods> customerReturnListGoodsList = null;
+	
+	
+
+	public List<CustomerReturnListGoods> getCustomerReturnListGoodsList() {
+		return customerReturnListGoodsList;
+	}
+
+	public void setCustomerReturnListGoodsList(List<CustomerReturnListGoods> customerReturnListGoodsList) {
+		this.customerReturnListGoodsList = customerReturnListGoodsList;
+	}
 
 	public Integer getId() {
 		return id;

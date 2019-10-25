@@ -30,4 +30,11 @@ public interface GoodsRepository extends JpaRepository<Goods, Integer>, JpaSpeci
 	 */
 	@Query(value = "SELECT MAX(CODE) FROM t_goods", nativeQuery = true)
 	public String getMaxGoodsCode();
+	 
+	/**
+	 * 获取报警的商品
+	 * @return
+	 */
+	@Query(value = "SELECT * FROM t_goods where inventory_quantity < min_num", nativeQuery = true)
+	public List<Goods> listAlarm();
 }

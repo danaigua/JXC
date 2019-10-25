@@ -47,4 +47,25 @@ public interface SaleListService {
 	 * @param id
 	 */
 	public void delete(Integer id);
+	
+	/**
+	 * 进货单支付状态修改
+	 * @param saleList
+	 */
+	public void update(SaleList saleList);
+	/**
+	 * 按天统计某个日期范围内的销售信息
+	 * @param begin
+	 * @param end
+	 * @return
+	 */
+	public List<Object> countSaleByDay(String begin,String end);
+	
+	/**
+	 * 按月统计某个日期范围内的销售信息
+	 * @param begin
+	 * @param end
+	 * @return
+	 */
+	public List<Object> countSaleByMonth(String begin,String end);
 }

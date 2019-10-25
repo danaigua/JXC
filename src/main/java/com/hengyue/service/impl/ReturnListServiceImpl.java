@@ -119,4 +119,11 @@ public class ReturnListServiceImpl implements ReturnListService {
 		// TODO Auto-generated method stub
 		return returnListRepository.getOne(id);
 	}
+
+
+	@Override
+	public void update(ReturnList returnList) {
+		// TODO Auto-generated method stub
+		returnListRepository.save(returnList);
+	}
 }
