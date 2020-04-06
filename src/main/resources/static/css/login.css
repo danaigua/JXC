@@ -1,0 +1,33 @@
+body{
+	background-color: rgb(224, 236, 255);
+}
+.loginBox {
+	width: 450px!important;
+	padding: 50px 60px!important;
+	border: none;
+	margin: auto auto;
+	margin-top: 10%;
+}
+
+.input_box {
+	margin-bottom: 20px!important;
+}
+.verification{
+	margin-bottom: 20px!important;
+	width: 50%;
+	float: left;
+}
+.login{
+	width: 100%;
+	height: 100%;
+	float: left;
+}
+.loginbtn{
+	width: 100%;
+	height: 30px;
+}
+.company{
+	margin-bottom: 20px!important;
+	width: 100%;
+	font-size: 18px;
+}

@@ -3,6 +3,7 @@ package com.hengyue.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
@@ -37,6 +38,8 @@ public class User {
 	
 	@Transient
 	private String roles;		//所拥有得角色
+	
+	private Integer folderId;	//所拥有的文件夹的id号码
 
 	public Integer getId() {
 		return id;
@@ -85,11 +88,21 @@ public class User {
 	public void setRoles(String roles) {
 		this.roles = roles;
 	}
+	
+	
+
+	public Integer getFolderId() {
+		return folderId;
+	}
+
+	public void setFolderId(Integer folderId) {
+		this.folderId = folderId;
+	}
 
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", userName=" + userName + ", password=" + password + ", trueName=" + trueName
-				+ ", remarks=" + remarks + ", roles=" + roles + "]";
+				+ ", remarks=" + remarks + ", roles=" + roles + ", folderId=" + folderId + "]";
 	}
 	
 	

@@ -3,6 +3,7 @@ package com.hengyue.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -28,11 +29,20 @@ public class Customer {
 	@Column(length = 50)
 	private String number;		//联系电话
 	
+	@Column(length = 50)
+	private String telephone;  //联系电话
+	
 	@Column(length = 300)
 	private String address;		//联系地址
 	
 	@Column(length = 1000)		//备注
 	private String remarks;
+	
+	@Column(length = 300)
+	private String code;		//客户代码
+	
+	@Column(length = 300)
+	private String uuid;		//uuid
 
 	public Integer getId() {
 		return id;
@@ -81,6 +91,36 @@ public class Customer {
 
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
+	}
+	
+	
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+	
+	
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+	
+	
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	@Override

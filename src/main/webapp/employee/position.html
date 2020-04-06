@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>职位信息</title>
+<link rel="stylesheet" type="text/css" href="/static/jquery-easyui-1.3.3/themes/default/easyui.css"></link>
+<link rel="stylesheet" type="text/css" href="/static/jquery-easyui-1.3.3/themes/icon.css"></link>
+<script type="text/javascript" src="/static/jquery-easyui-1.3.3/jquery.min.js"></script>
+<script type="text/javascript" src="/static/jquery-easyui-1.3.3/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/static/jquery-easyui-1.3.3/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript">
+	
+	var url;
+	
+	function formatEdit(val,row){
+		return "<a href=\"javascript:openSalaryTempleDialog("+row.id+")\"><img style='margin-top:4px' src='/static/images/edit.gif'/></a>";
+	}
+	
+	function searchPosition(){
+		$("#dg").datagrid('load',{
+			"name":$("#name").val(),
+		});
+	}
+	function resetValue(){
+		$("#name").val("");
+		$("#telephone").val("");
+		$("#eMail").val("");
+		$("#department").val("");
+		$("#position").val("");
+		$("#entryTime").val("");
+		$("#address").val("");
+	}
+	
+	function closePositionDialog(){
+		$("#dlg").dialog("close");
+		resetValue();
+	}
+	
+	function savePosition(){
+		$("#fm").form("submit",{
+			url:url,
+			onSubmit:function(){
+				return $(this).form("validate");
+			},
+			success:function(result){
+				var result=eval('('+result+')');
+				if(result.success){
+					$.messager.alert("系统提示","保存成功！");
+					resetValue();
+					$("#dlg").dialog("close");
+					$("#dg").datagrid("reload");
+				}else{
+					$.messager.alert("系统提示",result.errorInfo);
+				}
+			}
+		});
+	}
+	
+	function openPositionAddDialog(){
+		$("#dlg").dialog("open").dialog("setTitle","添加职位信息");
+		url="/admin/position/save";
+	}
+	
+	function openPositionModifyDialog(){
+		var selectedRows=$("#dg").datagrid("getSelections");
+		if(selectedRows.length!=1){
+			$.messager.alert("系统提示","请选择一条要修改的数据！");
+			return;
+		}
+		var row=selectedRows[0];
+		$("#dlg").dialog("open").dialog("setTitle","修改职位信息");
+		$("#fm").form("load",row);
+		url="/admin/position/save?id="+row.id;
+	}
+	
+	function deletePosition(){
+		var selectedRows=$("#dg").datagrid("getSelections");
+		if(selectedRows.length!=1){
+			$.messager.alert("系统提示","请选择一条要删除的数据！");
+			return;
+		}
+		var id=selectedRows[0].id;
+		$.messager.confirm("系统提示","您确定要删除这条数据吗?",function(r){
+			if(r){
+				$.post("/admin/position/delete",{id:id},function(result){
+					if(result.success){
+						$.messager.alert("系统提示","数据已成功删除！");
+						$("#dg").datagrid("reload");
+					}else{
+						$.messager.alert("系统提示",result.errorInfo);
+					}
+				},"json");
+			}
+		});
+	}
+	
+	function openSalaryTempleDialog(positionId){
+		$("#salaryDlg").dialog("open").dialog("setTitle","选择薪资模板");
+		console.log(positionId);
+		url="/admin/position/save?id="+positionId;
+	}
+	
+	function saveSalary(){
+		$("#fm2").form("submit",{
+			url:url,
+			onSubmit:function(){
+				return $(this).form("validate");
+			},
+			success:function(result){
+				var result=eval('('+result+')');
+				if(result.success){
+					$.messager.alert("系统提示","保存成功！");
+					resetValue();
+					$("#salaryDlg").dialog("close");
+					$("#dg").datagrid("reload");
+				}else{
+					$.messager.alert("系统提示",result.errorInfo);
+				}
+			}
+		});
+	}
+	
+	function closeSalaryDialog(){
+		$("#salaryDlg").dialog("close");
+	}
+	
+	//添加双击事件
+	$(document).ready(function() {
+		$("#dg").datagrid({
+			onDblClickRow:function(index,row){
+				$("#dlg").dialog("open").dialog("setTitle","修改职位信息");
+				$("#fm").form("load",row);
+				url="/admin/position/save?id="+row.id;
+			}
+		});
+	});
+</script>
+</head>
+<body>
+	<table id="dg" title="系统日志" class="easyui-datagrid"
+	fitColumns="true" pagination="true" rownumbers="true" singleSelect="true"
+	url="/admin/position/list" fit="true" toolbar="#tb">
+		<thead>
+			<th field="id" width="100" align="center">编号</th>
+			<th field="name" width="250" align="center">职位名称</th>
+			<th field="remarks" width="350" align="center">备注</th>
+			<th field="salaryName" width="250" align="center">薪资模板</th>
+			<th field="salary" width="250" align="center" formatter="formatEdit" align="center">薪资模板设置</th>
+		</thead>
+	</table>
+	<div id="tb">
+		<div>
+			<a href="javascript:openPositionAddDialog()" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+			<a href="javascript:openPositionModifyDialog()" class="easyui-linkbutton" iconCls="icon-edit" plain="true">修改</a>
+			<a href="javascript:deletePosition()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
+		</div>
+		<fieldset>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;模板名称：&nbsp;
+			<input type="text" id="name" size="20" onkeydown="if(event.keyCode==13) searchPosition()"/>
+			&nbsp;&nbsp;<a href="javascript:searchPosition()" class="easyui-linkbutton" iconCls="icon-search" plain="true">搜索</a>
+		</fieldset>
+	</div>
+	
+	<div id="dlg" class="easyui-dialog" style="width: 450px;height: 320px;padding: 10px 20px"
+	closed="true" buttons="#dlg-buttons" data-options="onClose:function(){resetValue()}">
+		<form id="fm" method="post">
+			<table cellspacing="8px">
+				<tr>
+					<td>职位名称：</td>
+					<td>
+						<input type="text" id="name" name="name" class="easyui-validatebox"  style="width: 250px" />
+					</td>
+				</tr>
+				
+				<tr>
+					<td>备注：</td>
+					<td>
+						<textarea rows="5" cols="40" id="remarks" name="remarks"></textarea>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="salaryDlg" class="easyui-dialog" style="width: 300px;height: 150px;padding: 10px 20px"
+	closed="true" buttons="#salary-dlg-buttons" data-options="onClose:function(){resetValue()}">
+		<form id="fm2" method="post">
+			<table cellspacing="8px">
+				<tr>
+					<td>请选择薪资模板：</td>
+					<td>
+						<select class="easyui-combobox"  id="unit" name="salaryId" 
+						style="width: 120px" data-options="panelHeight:'auto',editable:false,valueField:'id',
+						textField:'name',url:'/admin/salary/comboList'"></select>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="dlg-buttons">
+		<a href="javascript:savePosition()" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
+		<a href="javascript:closePositionDialog()" class="easyui-linkbutton" iconCls="icon-cancel" >关闭</a>
+	</div>
+	<div id="salary-dlg-buttons">
+		<a href="javascript:saveSalary()" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
+		<a href="javascript:closeSalaryDialog()" class="easyui-linkbutton" iconCls="icon-cancel" >关闭</a>
+	</div>
+</body>
+</html>

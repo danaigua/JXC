@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>项目规划</title>
+<link rel="stylesheet" type="text/css"
+	href="/static/jquery-easyui-1.3.3/themes/default/easyui.css"></link>
+<link rel="stylesheet" type="text/css"
+	href="/static/jquery-easyui-1.3.3/themes/icon.css"></link>
+<script type="text/javascript"
+	src="/static/jquery-easyui-1.3.3/jquery.min.js"></script>
+<script type="text/javascript"
+	src="/static/jquery-easyui-1.3.3/jquery.easyui.min.js"></script>
+<script type="text/javascript"
+	src="/static/jquery-easyui-1.3.3/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="/static/js/admin/project/plan.js"></script>
+</head>
+<body>
+	<table id="dg" title="项目规划管理--正在进行的项目" class="easyui-datagrid"
+		fitColumns="true" pagination="true" rownumbers="true"
+		singleSelect="true" url="/admin/plan/list" fit="true" toolbar="#tb">
+		<thead>
+			<th field="name" width="150" align="center">项目名称</th>
+			<th field="principal" width="100" align="center">总负责人</th>
+			<th field="time" width="100" align="center">立项时间</th>
+			<th field="scheduleString" width="100" align="center">项目进度</th>
+			<th field="content" width="250" align="center">功能描述</th>
+			<th field="remarks" width="250" align="center">备注</th>
+		</thead>
+	</table>
+	<div id="tb">
+		<div>
+			<a href="javascript:openPlanAddDialog()" class="easyui-linkbutton"
+				iconCls="icon-add" plain="true">添加</a> <a
+				href="javascript:openPlanModifyDialog()" class="easyui-linkbutton"
+				iconCls="icon-edit" plain="true">修改</a> 
+				<a href="javascript:deletePlan()" class="easyui-linkbutton"
+				iconCls="icon-remove" plain="true">删除</a>
+				<a href="javascript:openTaskWindows()" class="easyui-linkbutton"
+				iconCls="icon-submit" plain="true">打开任务窗口</a>
+				<a href="javascript:showNotFinishProject()" class="easyui-linkbutton"
+				iconCls="icon-tip" plain="true">显示未完成项目</a>
+				<a href="javascript:showFinishProject()" class="easyui-linkbutton"
+				iconCls="icon-tip" plain="true">显示已完成项目</a>
+		</div>
+		<fieldset>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;项目名称：&nbsp; <input
+				type="text" id="s_name" size="20"
+				onkeydown="if(event.keyCode==13) searchTime()" /> &nbsp;&nbsp;<a
+				href="javascript:searchTime()" class="easyui-linkbutton"
+				iconCls="icon-search" plain="true">搜索</a>
+		</fieldset>
+	</div>
+
+	<div id="dlg" class="easyui-dialog" title="新增项目"
+		style="width: 650px; height: 450px; padding: 10px 20px" closed="true"
+		buttons="#dlg-buttons" data-options="onClose:function(){resetValue()}">
+		<form id="fm" method="post">
+			<table cellspacing="8px">
+				<tr>
+					<td>项目名称：</td>
+					<td><input type="text" id="planName" name="name"
+						class="easyui-validatebox" style="width: 250px" /></td>
+				</tr>
+				<tr>
+					<td>项目负责人：</td>
+					<td><input class="easyui-combobox" name="userId"
+						data-options="url:'/admin/user/combobox',method:'post',valueField:'id',textField:'text',panelHeight:'auto'">
+					</td>
+				</tr>
+				<tr>
+					<td>功能描述</td>
+					<td><textarea id="planContent" rows="5" cols="40"
+							name="content"></textarea></td>
+				</tr>
+				<tr>
+					<td>项目备注</td>
+					<td><textarea id="planRemarks" rows="5" cols="40"
+							name="remarks"></textarea></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+
+	<!-- 修改的窗口开始 -->
+	<div id="dlgModyfy" class="easyui-dialog" title="修改项目"
+		style="width: 650px; height: 530px; padding: 10px 20px" closed="true"
+		buttons="#dlgButtonsModify"
+		data-options="onClose:function(){resetModifyValue()}">
+		<form id="fmModify" method="post">
+			<table cellspacing="8px">
+				<tr>
+					<td>项目名称：</td>
+					<td><input type="text" id="name" name="name"
+						class="easyui-validatebox" style="width: 250px" /></td>
+				</tr>
+				<tr>
+					<td>编号：</td>
+					<td><input type="text" id="id" name="id"
+						class="easyui-validatebox" style="width: 250px" readonly /></td>
+				</tr>
+				<tr>
+					<td>立项时间：</td>
+					<td><input type="text" id="time" name="time"
+						class="easyui-validatebox" style="width: 250px" readonly /></td>
+				</tr>
+				<tr>
+					<td>进度：</td>
+					<td><input type="text" id="schedules" name="schedules"
+						class="easyui-validatebox" style="width: 250px" readonly /> <input
+						type="hidden" id="finish" name="finish" class="easyui-validatebox"
+						style="width: 250px" /></td>
+				</tr>
+				<tr>
+					<td>项目负责人：</td>
+					<td><input class="easyui-combobox" name="userId"
+						data-options="url:'/admin/user/combobox',method:'post',valueField:'id',textField:'text',panelHeight:'auto'">
+					</td>
+				</tr>
+				<tr>
+					<td>功能描述</td>
+					<td><textarea rows="5" cols="40" id="content" name="content"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td>项目备注</td>
+					<td><textarea rows="5" cols="40" id="remarks" name="remarks"></textarea>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<!-- 修改按钮开始 -->
+	<div id="dlgButtonsModify">
+		<a href="javascript:savePlanModify()" class="easyui-linkbutton"
+			iconCls="icon-ok">保存</a> <a href="javascript:closePlanModifyDialog()"
+			class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+	</div>
+	<!-- 修改按钮结束 -->
+
+	<!-- 修改的窗口结束 -->
+	<div id="dlg-buttons">
+		<a href="javascript:savePlan()" class="easyui-linkbutton"
+			iconCls="icon-ok">保存</a> <a href="javascript:closePlanDialog()"
+			class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+	</div>
+
+	<div id="planCourseDialog" class="easyui-window" title="项目进度窗口"
+		data-options="iconCls:'icon-save'"
+		style="width: 1000px; height: 500px; padding: 5px;">
+		<div class="easyui-layout" data-options="fit:true">
+			<div data-options="region:'east',split:true" style="width: 400px">
+				<!-- 编写文档小框 -->
+				<p><span style="color:red">技术参数：</span><span id="document1"></span></p>
+				<!-- <p><span style="color:red"></span><span id="document2"></span></p> -->
+				<p><span style="color:red">计划时间内未完成原因：</span><span id="document3"></span></p>
+				<!-- <p><span style="color:red">功能描述：</span><span id="document4"></span></p>
+				<p><span style="color:red">任务备注：</span><span id="document5"></span></p> -->
+				<p><span style="color:red">提交文档：</span><span id="document6"></span></p>
+			</div>
+			<div data-options="region:'center'" style="padding: 10px;">
+				<table id="dgTask" title="项目任务" class="easyui-datagrid"
+					fitColumns="true" rownumbers="true"
+					singleSelect="true" url="/admin/planCourse/listByPlanId" fit="true"
+					toolbar="#tb2">
+					<thead>
+						<th field="name" width="100" align="center">任务名称</th>
+						<th field="principal" width="100" align="center">任务负责人</th>
+						<th field="times" width="100" align="center">立项时间</th>
+						<th field="finishTime" width="100" align="center">计划完成时间</th>
+						<th field="questionState" width="100" align="center">状态</th>
+					</thead>
+				</table>
+				<div id="tb2">
+					<div>
+						<a href="javascript:openPlanPlanCourseAddDialog()"
+							class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+						<a href="javascript:openPlanPlanCourseModifyDialog()"
+							class="easyui-linkbutton" iconCls="icon-edit" plain="true">修改</a>
+						<a href="javascript:deletePlanPlanCourse()"
+							class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
+						<a href="javascript:showNotFinishTask()"
+							class="easyui-linkbutton" iconCls="icon-tip" plain="true">显示未完成(默认)</a>
+						<a href="javascript:showFinishTask()"
+							class="easyui-linkbutton" iconCls="icon-tip" plain="true">显示已完成</a>
+						<a href="javascript:changeToAffirm()"
+							class="easyui-linkbutton" iconCls="icon-mini-edit" plain="true">设置为确认</a>
+						<a href="javascript:examineTask1()"
+							class="easyui-linkbutton" iconCls="icon-sum" plain="true">审批一</a>
+						<a href="javascript:examineTask2()"
+							class="easyui-linkbutton" iconCls="icon-sum" plain="true">审批二</a>
+						<a href="javascript:examineTask3()"
+							class="easyui-linkbutton" iconCls="icon-sum" plain="true">审批三</a>
+					</div>
+				</div>
+				<!-- 打开一个任务窗口--任务窗口 -->
+				<div id="examineTask" class="easyui-dialog" title="审批"
+					style="width: 600px; height: 350px; padding: 10px 20px"
+					closed="true" buttons="#dlg-task-examine-buttons"
+					data-options="onClose:function(){$('#task-examine');}">
+					<form id="taskExamineForm" method="post">
+						<table cellspacing="8px">
+							<tr>
+								<td>审批：</td>
+								<td><textarea id="task-examine" rows="11" cols="50" ></textarea></td>
+							</tr>
+						</table>
+					</form>	
+				</div>
+				<!-- 打开一个查看审批的窗口 -->
+				<div id="showExamineWindow" class="easyui-window" data-options="iconCls:'icon-save',minimizable:false,"
+				 style="width:800px;height:600px;padding:10px;">
+					<p style="color:red">审批内容：<span id="examineContent"></span></p>
+					<p style="color:red">解决方案：<span id="replyContent"></span></p>
+				</div>
+				<!-- 打开一个任务窗口--任务窗口 -->
+				<div id="openTask" class="easyui-dialog" title="新添加任务"
+					style="width: 600px; height: 550px; padding: 10px 20px"
+					closed="true" buttons="#dlg-task-buttons"
+					data-options="onClose:function(){newAddTaskReset();}">
+					<form id="taskForm" method="post">
+						<table cellspacing="8px">
+							<tr>
+								<td>任务名称：</td>
+								<td><input id="task-name" type="text" name="name"
+									class="easyui-validatebox" style="width: 250px" /></td>
+							</tr>
+							<tr>
+								<td>任务负责人：</td>
+								<td><input class="easyui-combobox" name="userId"
+									id="new-add-task"
+									data-options="url:'/admin/user/combobox',method:'post',valueField:'id',textField:'text',panelHeight:'auto'">
+								</td>
+							</tr>
+							<tr>
+								<td>执行标准：</td>
+								<td><select id="standardSelect1" class="easyui-combobox"
+									name="planCourseStandard.id" style="width: 160px"
+									data-options="panelHeight:'auto',editable:false,valueField:'id',
+										textField:'name',url:'/admin/planCourseStandard/combobox'">
+								</select> <a href="javascript:openStandardDialog()"
+									class="easyui-linkbutton" iconCls="icon-search" plain="true"></a>
+								</td>
+							</tr>
+							<tr>
+								<td>计划完成的时间：</td>
+								<td><input class="easyui-datetimebox" id="task-finishTime"
+									name="finishTime" /></td>
+							</tr>
+							<tr>
+								<td>功能描述</td>
+								<td><textarea id="task-desc" rows="5" cols="40"
+										name="content"></textarea></td>
+							</tr>
+							<tr>
+								<td>任务备注</td>
+								<td><textarea id="task-remarks" rows="5" cols="40"
+										name="remarks"></textarea></td>
+							</tr>
+						</table>
+					</form>
+				</div>
+				<!-- 修改任务的窗口 -->
+				<div id="openModifyTask" class="easyui-dialog" title="修改任务"
+					style="width: 600px; height: 600px; padding: 10px 20px"
+					closed="true" buttons="#dlg-task-modify-buttons"
+					data-options="onClose:function(){resetTaskValue();}">
+					<form id="taskModifyForm" method="post">
+						<table cellspacing="8px">
+							<tr>
+								<td>任务名称：</td>
+								<td><input id="taskModifyName" type="text" name="name"
+									class="easyui-validatebox" style="width: 250px" /></td>
+							</tr>
+							<tr>
+								<td>任务负责人：</td>
+								<td>
+									<input class="easyui-combobox" style="width: 160px" name="principal" id="task-modify-principal" readonly /> 
+									<input type="hidden" id="task-modify-id" name="id" />
+									<input type="hidden" id="task-user-id" name="userId" />
+								</td>
+							</tr>
+							<tr>
+								<td>立项时间：</td>
+								<td><input id="task-user-times" style="width: 160px" class="easyui-combobox" name="times" readonly />
+								</td>
+							</tr>
+							<tr>
+								<td>执行标准：</td>
+								<td><select id="standardSelect" class="easyui-combobox"
+									id="unit" name="planCourseStandard.id" style="width: 160px"
+									data-options="panelHeight:'auto',editable:false,valueField:'id',
+										textField:'name',url:'/admin/planCourseStandard/combobox'">
+									</select> <a href="javascript:openStandardDialog()"
+									class="easyui-linkbutton" iconCls="icon-search" plain="true"></a>
+								</td>
+							</tr>
+							<tr>
+								<td>是否完成：</td>
+								<td>
+									<select id="finishOrNot" class="easyui-combobox" name="finish" style="width:160px;">
+										<option value="1">已完成</option>
+										<option value="0">未完成</option>
+									</select>
+								</td>
+							</tr>
+							<!-- <tr>
+								<td>完成进度：</td>
+								<td><input class="easyui-numberbox" name="schedules"
+									data-options="min:0,max:100,precision:0">
+									<input type="hidden" name="schedulesString" readonly /></td>
+							</tr> -->
+							<tr>
+								<td>计划完成的时间：</td>
+								<td><input class="easyui-datetimebox" id="task_finishTime" style="width: 160px"
+									name="finishTime" readonly /></td>
+							</tr>
+							<tr>
+								<td>功能描述</td>
+								<td><textarea id="taskModifyDesc" rows="5" cols="40"
+									 name="content"></textarea></td>
+							</tr>
+							<tr>
+								<td>任务备注</td>
+								<td><textarea id="taskModifyRemarks" rows="5" cols="40"
+									 name="remarks"></textarea></td>
+							</tr>
+						</table>
+					</form>
+				</div>
+				<div id="standard" class="easyui-dialog" title="执行标准"
+					style="width: 800px; height: 620px; padding: 10px 20px"
+					closed="true" buttons="#standard-buttons"
+					data-options="onClose:function(){}">
+					<!-- 任务标准树形结构 -->
+					<div class="easyui-layout" data-options="fit:true"
+						style="padding-top: 2px">
+						<div data-options="region:'west',collapsible:false"
+							style="width: 200px" split=true>
+							<ul id="standardTree" class="easyui-tree" style="padding: 10px"></ul>
+							<div style="position: absolute; bottom: 10px; left: 15px">
+								<a href="javascript:openStandrdTypeAddDialog()"
+									class="easyui-linkbutton" iconCls="icon-add">新增</a> <a
+									id="standardTypeDel" href="javascript:deleteStandardType()"
+									class="easyui-linkbutton" disabled=true iconCls="icon-remove">删除</a>
+							</div>
+
+							<!-- 添加一个框来添加标准 -->
+							<div id="newStandardType" class="easyui-dialog"
+								style="width: 450px; height: 150px; padding: 10px 20px"
+								closed="true" buttons="#dlg-standard-type-buttons" title="商品标准类型添加"
+								data-options="onClose:function(){$('#standard-type-name').val('')}">
+								<form method="post">
+									<table cellspacing="8px">
+										<tr>
+											<td>标准类别名称：</td>
+											<td><input id="standard-type-name" type="text"
+												class="easyui-validatebox" style="width: 250px" /> <input
+												type="hidden" name="date" /></td>
+										</tr>
+									</table>
+								</form>
+
+								<!-- 执行标准按钮 -->
+								<div id="dlg-standard-type-buttons">
+									<a href="javascript:saveStandardTypeNewOrChange()"
+										class="easyui-linkbutton" iconCls="icon-ok">保存</a> <a
+										href="javascript:closeStandardTypeNewOrChange()"
+										class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+								</div>
+							</div>
+						</div>
+						<div data-options="region:'center'">
+							<table id="standardDg" title="执行标准类别" class="easyui-datagrid"
+								fitColumns="true" pagination="true" rownumbers="true"
+								singleSelect="true" url="/admin/planCourseStandard/list"
+								fit="true" toolbar="#standardTb">
+								<thead>
+									<th field="name" width="80" align="center">标准名称</th>
+									<th field="standard" width="100" align="center">标准参数</th>
+									<th field="createTimes" width="100" align="center">标准创立时间</th>
+									<th field="explains" width="100" align="center">标准补充说明</th>
+									<th field="remarks" width="100" align="center">备注</th>
+								</thead>
+							</table>
+							<div id="standardTb">
+								<div>
+									<a href="javascript:openStandardAddDialog()"
+										class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+									<a href="javascript:openStandardModifyDialog()"
+										class="easyui-linkbutton" iconCls="icon-edit" plain="true">修改</a>
+									<a href="javascript:deleteStandard()" class="easyui-linkbutton"
+										iconCls="icon-remove" plain="true">删除</a>
+								</div>
+								<div>
+									&nbsp;标准名称：&nbsp;<input type="text" id="standardName" size="20"
+										onkeydown="if(event.keyCode==13) searchGoods()" /> <a
+										href="javascript:searchStandard()" class="easyui-linkbutton"
+										iconCls="icon-search" plain="true">搜索</a>
+								</div>
+							</div>
+						</div>
+
+						<!-- 添加一个框来添加标准 -->
+						<div id="newStandard" class="easyui-dialog"
+							style="width: 600px; height: 550px; padding: 10px 20px"
+							closed="true" buttons="#dlg-standard-buttons"
+							data-options="onClose:function(){resetStandardFormValues()}">
+							<form id="standardForm" method="post">
+								<table cellspacing="8px">
+									<tr>
+										<td>标准名称：</td>
+										<td><input id="standard-name" type="text" name="name"
+											class="easyui-validatebox" style="width: 250px" /> 
+											<input type="hidden" name="createTimes" /></td>
+											<input type="hidden" id="typeId" name="typeId" /></td>
+									</tr>
+									<tr>
+										<td>标准参数</td>
+										<td><textarea id="standard-standard" rows="5" cols="40"
+											 name="standard"></textarea></td>
+									</tr>
+									<tr>
+										<td>标准说明</td>
+										<td><textarea id="standard-desc" rows="5" cols="40"
+											 name="explains"></textarea></td>
+									</tr>
+									<tr>
+										<td>备注</td>
+										<td><textarea id="standard-remarks" rows="5" cols="40"
+											 name="remarks"></textarea></td>
+									</tr>
+								</table>
+							</form>
+
+							<!-- 执行标准按钮 -->
+							<div id="dlg-standard-buttons">
+								<a href="javascript:saveStandardNewOrChange()"
+									class="easyui-linkbutton" iconCls="icon-ok">保存</a> <a
+									href="javascript:closeStandardNewOrChange()"
+									class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+							</div>
+
+						</div>
+
+						<!-- 执行标准按钮 -->
+						<div id="standard-buttons">
+							<a href="javascript:saveStandardSelect()"
+								class="easyui-linkbutton" iconCls="icon-ok">保存</a> <a
+								href="javascript:closeStandardDialog()"
+								class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+						</div>
+
+					</div>
+				</div>
+
+				<!-- 任务窗口按钮 -->
+				<div id="dlg-task-buttons">
+					<a href="javascript:savePlanCourse()" class="easyui-linkbutton"
+						iconCls="icon-ok">保存</a> <a
+						href="javascript:closePlanCourseDialog()"
+						class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+				</div>
+				<!-- 任务窗口按钮 -->
+				<div id="dlg-task-examine-buttons">
+					<a href="javascript:savePlanCourseExamine()" class="easyui-linkbutton"
+						iconCls="icon-ok">保存</a> <a
+						href="javascript:closePlanCourseExamineDialog()"
+						class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+				</div>
+				<!-- 修改任务窗口按钮 -->
+				<div id="dlg-task-modify-buttons">
+					<a href="javascript:saveModifyPlanCourse()"
+						class="easyui-linkbutton" iconCls="icon-ok">保存</a> <a
+						href="javascript:closeModifyPlanCourseDialog()"
+						class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

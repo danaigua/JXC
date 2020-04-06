@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>数据导入</title>
+<link rel="stylesheet" type="text/css" href="/static/jquery-easyui-1.3.3/themes/default/easyui.css"></link>
+<link rel="stylesheet" type="text/css" href="/static/jquery-easyui-1.3.3/themes/icon.css"></link>
+<script type="text/javascript" src="/static/jquery-easyui-1.3.3/jquery.min.js"></script>
+<script type="text/javascript" src="/static/jquery-easyui-1.3.3/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/static/jquery-easyui-1.3.3/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript">
+	function formatEdit(val, row){
+		return "<a href=\"javascript:openDownloadDialog("+row.id+") \">下载</a>";
+	}
+	var url;
+	var downloadRowId;
+	function openDownloadDialog(rowId){
+		downloadRowId = rowId;
+		$("#dlg3").dialog("open");
+	}
+	function closeDownloadDialog3(){
+		$("#dlg3").dialog("close");
+	}
+	function download(rowId){
+		$.post("/admin/isoFileUpload/download", {downloadFileId:downloadRowId, path:$('#path').val()},function(result){
+			console.log(result);
+			if(result.success){
+				$.messager.alert("系统提示","下载成功！");
+				$("#dlg3").dialog("close");
+			}else{
+				$.messager.alert("系统提示", result.errorInfo);
+				$("#dlg3").dialog("close");
+			}
+		});
+	}
+	function searchDataUpload(){
+		$("#dg").datagrid('load',{
+			"name":$("#name").val(),
+			"content":$("#content1").val()
+		});
+	}
+	function resetValue(){
+		$("#file").val("");
+	}
+	function closeDataUploadDialog2(){
+		$("#dlg2").dialog("close");
+		resetValue();
+	}
+	function closeDataUploadDialog(){
+		$("#dlg").dialog("close");
+		resetValue();
+	}
+	function saveDataUpload(){
+		$("#fm").form("submit",{
+			url:url,
+			onSubmit:function(){
+				return $(this).form("validate");
+			},
+			success:function(result){
+				var result=eval('('+result+')');
+				if(result.success){
+					$.messager.alert("系统提示","保存成功！");
+					resetValue();
+					$("#dlg").dialog("close");
+					$("#dg").datagrid("reload");
+				}else{
+					$.messager.alert("系统提示",result.errorInfo);
+				}
+			}
+		});
+	}
+	function saveDataUpload2(){
+		$("#fm2").form("submit",{
+			url:url,
+			onSubmit:function(){
+				return $(this).form("validate");
+			},
+			success:function(result){
+				var result=eval('('+result+')');
+				if(result.success){
+					$.messager.alert("系统提示","保存成功！");
+					resetValue();
+					$("#dlg2").dialog("close");
+					$("#dg").datagrid("reload");
+				}else{
+					$.messager.alert("系统提示",result.errorInfo);
+				}
+			}
+		});
+	}
+	function openDataUploadAddDialog(){
+		$("#dlg").dialog("open").dialog("setTitle","添加文件");
+		url="/admin/isoFileUpload/isoUpload";
+	}
+	
+	function openDataUploadModifyDialog(){
+		var selectedRows=$("#dg").datagrid("getSelections");
+		if(selectedRows.length!=1){
+			$.messager.alert("系统提示","请选择一条要修改的数据！");
+			return;
+		}
+		var row=selectedRows[0];
+		$("#dlg2").dialog("open").dialog("setTitle","修改文件信息");
+		$("#fm2").form("load",row);
+		url="/admin/isoFileUpload/save?id="+row.id;
+	}
+	
+	function deleteDataUpload(){
+		var selectedRows=$("#dg").datagrid("getSelections");
+		if(selectedRows.length!=1){
+			$.messager.alert("系统提示","请选择一条要删除的数据！");
+			return;
+		}
+		var id=selectedRows[0].id;
+		$.messager.confirm("系统提示","您确定要删除这条数据吗?",function(r){
+			if(r){
+				$.post("/admin/isoFileUpload/delete",{id:id},function(result){
+					if(result.success){
+						$.messager.alert("系统提示","数据已成功删除！");
+						$("#dg").datagrid("reload");
+					}else{
+						$.messager.alert("系统提示",result.errorInfo);
+					}
+				},"json");
+			}
+		});
+	}
+	//添加双击事件
+	$(document).ready(function() {
+		$("#dg").datagrid({
+			onDblClickRow:function(index,row){
+				$("#dlg2").dialog("open").dialog("setTitle","修改文件信息");
+				$("#fm2").form("load",row);
+				url="/admin/isoFileUpload/save?id="+row.id;
+			}
+		});
+		
+	});
+</script>
+</head>
+<body>
+	<table id="dg" title="资料数据" class="easyui-datagrid"
+	fitColumns="true" pagination="true" rownumbers="true" singleSelect="true"
+	url="/admin/isoFileUpload/list" fit="true" toolbar="#tb">
+		<thead>
+			<th field="name" width="100" align="center">文件名称</th>
+			<th field="size" width="80" align="center">文件大小</th>
+			<th field="type" width="80" align="center">文件类型</th>
+			<th field="time" width="100" align="center">上传时间</th>
+			<th field="download" width="50" align="center">下载次数</th>
+			<th field="content" width="250" align="center">文件描述</th>
+			<th field="remarks" width="250" align="center">备注</th>
+			<th field="aa" width="70" align="center" formatter="formatEdit">权限菜单设置</th>
+		</thead>
+	</table>
+	<div id="tb">
+		<div>
+			<a href="javascript:openDataUploadAddDialog()" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+			<a href="javascript:openDataUploadModifyDialog()" class="easyui-linkbutton" iconCls="icon-edit" plain="true">修改</a>
+			<a href="javascript:deleteDataUpload()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
+		</div>
+		<fieldset>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;模板名称：&nbsp;
+			<input type="text" id="name" size="20" onkeydown="if(event.keyCode==13) searchDataUpload()"/>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;文件描述：&nbsp;
+			<input type="text" id="content1" size="20" onkeydown="if(event.keyCode==13) searchDataUpload()"/>
+			&nbsp;&nbsp;<a href="javascript:searchDataUpload()" class="easyui-linkbutton" iconCls="icon-search" plain="true">搜索</a>
+		</fieldset>
+	</div>
+	
+	<div id="dlg" class="easyui-dialog" style="width: 500px;height: 400px;padding: 10px 20px"
+	closed="true" buttons="#dlg-buttons" data-options="onClose:function(){resetValue()}">
+		<form id="fm" method="post" enctype="multipart/form-data">
+			<table cellspacing="8px">
+				<tr>
+					<td>文件：</td>
+					<td>
+						<input type="file" id="file" name="file" class="easyui-validatebox" required="true" style="width: 250px" />
+					</td>
+				</tr>
+				<tr>
+					<td valign="top">文件描述：</td>
+					<td>
+						<textarea rows="5" cols="40" id="content2" name="content"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td valign="top">备注：</td>
+					<td>
+						<textarea rows="5" cols="40" id="remarks" name="remarks"></textarea>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="dlg2" class="easyui-dialog" style="width: 650px;height: 500px;padding: 10px 20px"
+	closed="true" buttons="#dlg-buttons2" data-options="onClose:function(){resetValue()}">
+		<form id="fm2" method="post">
+			<table cellspacing="8px">
+				<tr>
+					<td>文件名称：</td>
+					<td>
+						<input type="text" id="fileName" name="name" class="easyui-validatebox" required="true" style="width: 250px" />
+					</td>
+				</tr>
+				<tr>
+					<td>格式化名称：</td>
+					<td>
+						<input type="text" id="formatname" name="formatname" class="easyui-validatebox" required="true" style="width: 250px" />
+					</td>
+				</tr>
+				<tr>
+					<td>上传路径：</td>
+					<td>
+						<input type="text" id="url" name="url" class="easyui-validatebox" required="true" style="width: 250px" />
+					</td>
+				</tr>
+				<tr>
+					<td>文件大小：</td>
+					<td>
+						<input type="text" id="size" name="size" class="easyui-validatebox" required="true" style="width: 250px" />
+					</td>
+				</tr>
+				<tr>
+					<td>文件类型：</td>
+					<td>
+						<input type="hidden" id="label" name="label" class="easyui-validatebox" style="width: 250px" />
+						<input type="text" id="type" name="type" class="easyui-validatebox" required="true" style="width: 250px" />
+						<input type="hidden" id="state" name="state" class="easyui-validatebox"  style="width: 250px" />
+						<input type="hidden" name="download" class="easyui-validatebox"  style="width: 250px" />
+					</td>
+				</tr>
+				<tr>
+					<td>上传时间：</td>
+					<td>
+						<input type="text" id="time" name="time" class="easyui-validatebox" required="true" style="width: 250px" />
+					</td>
+				</tr>
+				<tr>
+					<td valign="top">文件描述：</td>
+					<td>
+						<textarea rows="5" cols="40" id="content3" name="content"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td valign="top">备注：</td>
+					<td>
+						<textarea rows="5" cols="40" id="remarks2" name="remarks"></textarea>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="dlg3" class="easyui-dialog" style="width: 250px;height: 120px;padding: 10px 20px" title="下载文件"
+	closed="true" buttons="#dlg-buttons3" data-options="onClose:function(){resetValue()}">
+		<form id="fm3" method="post">
+			<input type="text" id="path" name="path" autocomplete="off" placeholder="请输入下载的本机路径"> 
+		</form>
+	</div>
+	<div id="dlg-buttons">
+		<a href="javascript:saveDataUpload()" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
+		<a href="javascript:closeDataUploadDialog()" class="easyui-linkbutton" iconCls="icon-cancel" >关闭</a>
+	</div>
+	<div id="dlg-buttons2">
+		<a href="javascript:saveDataUpload2()" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
+		<a href="javascript:closeDataUploadDialog2()" class="easyui-linkbutton" iconCls="icon-cancel" >关闭</a>
+	</div>
+	<div id="dlg-buttons3">
+		<a href="javascript:download()" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
+		<a href="javascript:closeDownloadDialog3()" class="easyui-linkbutton" iconCls="icon-cancel" >关闭</a>
+	</div>
+</body>
+</html>

@@ -29,4 +29,11 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer>, Jp
 	 */
 	@Query(value = "select * from t_customer where name like ?1", nativeQuery = true)
 	public List<Customer> findByName(String name);
+	/**
+	 * 通过代码查询客户
+	 * @param string
+	 * @return
+	 */
+	@Query(value = "select * from t_customer where code = ?1", nativeQuery = true)
+	public Customer findCode(String string);
 }

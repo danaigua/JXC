@@ -3,6 +3,7 @@ package com.hengyue.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -80,6 +81,14 @@ public class Menu {
 	}
 
 	public void setPid(Integer pId) {
+		this.pId = pId;
+	}
+
+	public Integer getpId() {
+		return pId;
+	}
+
+	public void setpId(Integer pId) {
 		this.pId = pId;
 	}
 	

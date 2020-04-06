@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -28,8 +29,8 @@ public class Log {
 	public final static String LOGOUT_ACTION = "注销操作";
 	public final static String SEARCH_ACTION = "查询操作";
 	public final static String UPDATE_ACTION = "更新操作";
-	public final static String ADD_ACTION = "添加操作";
 	public final static String DELETE_ACTION = "删除操作";
+	public static final String ADD_ACTION = null;
 	
 	@Id
 	@GeneratedValue

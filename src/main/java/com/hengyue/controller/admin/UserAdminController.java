@@ -1,5 +1,6 @@
 package com.hengyue.controller.admin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,5 +176,26 @@ public class UserAdminController {
 		SecurityUtils.getSubject().logout();//在这一步的时候已经有帮忙清除session了，所以不用下面的操作
 //		session.invalidate();//把当前session全部清掉
 		return "redirect:/login.html";
+	}
+	/**
+	 * 
+	 * 用户的combobox
+	 * @param q
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping("/combobox")
+	@RequiresPermissions(value = "项目规划")
+	public List<Map<String, Object>> combobox(@RequestParam(value = "q", required= false)String q) throws Exception {
+		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
+		List<User> userList = userService.findAll();
+		for (User user : userList) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("id", user.getId());
+			map.put("text", user.getTrueName());
+			list.add(map);
+		}
+		return list;
 	}
 }

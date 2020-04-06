@@ -54,4 +54,17 @@ public interface UserService {
 	 * @return
 	 */
 	public User findById(Integer id);
+
+	/**
+	 * 查找所有的用户
+	 * @return
+	 */
+	public List<User> findAll();
+
+	/**
+	 * 通过查找用户真实姓名返回用户实体
+	 * @param userName
+	 * @return
+	 */
+	public User findByUserTrueName(String userName);
 }

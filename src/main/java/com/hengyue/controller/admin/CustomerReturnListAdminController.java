@@ -1,6 +1,7 @@
 package com.hengyue.controller.admin;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hengyue.entity.Log;
-import com.hengyue.entity.SaleList;
 import com.hengyue.entity.CustomerReturnList;
 import com.hengyue.entity.CustomerReturnListGoods;
 import com.hengyue.entity.User;
@@ -30,6 +30,7 @@ import com.hengyue.service.CustomerReturnListGoodsService;
 import com.hengyue.service.CustomerReturnListService;
 import com.hengyue.service.UserService;
 import com.hengyue.utils.DateUtil;
+import com.hengyue.utils.DateUtils;
 import com.hengyue.utils.StringUtils;
 
 /**
@@ -130,6 +131,111 @@ public class CustomerReturnListAdminController {
 		List<CustomerReturnListGoods> customerReturnGoodsListList = customerReturnListGoodsService.listByCustomerReturnListId(customerReturnListId);
 		map.put("rows", customerReturnGoodsListList);
 		logService.save(new Log(Log.SEARCH_ACTION,"客户退货查询"));
+		return map;
+	}
+	
+	/**
+	 * 根据条件查询所有客户退货查询
+	 * @param customerReturnList
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/listReturn")
+	@RequiresPermissions(value = "绩效考核")
+	public Map<String, Object> listReturn() throws Exception{
+		Map<String, Object> map = new HashMap<String, Object>();
+		CustomerReturnList customerReturnList = new CustomerReturnList();
+		customerReturnList.setbCustomerReturnDate(DateUtils.getThisMonthsFirstDay());
+		customerReturnList.seteCustomerReturnDate(new Date());
+		List<CustomerReturnList> customerReturnListList = customerReturnListService.list(customerReturnList, Direction.DESC, "customerReturnDate");
+		map.put("rows", customerReturnListList);
+		logService.save(new Log(Log.SEARCH_ACTION,"绩效考核查询"));
+		return map;
+	}
+	
+	/**
+	 * 根据条件查询所有客户退货查询
+	 * @param customerReturnList
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/listThisYearReturn")
+	@RequiresPermissions(value = "绩效考核")
+	public Map<String, Object> listThisYearReturn() throws Exception{
+		Map<String, Object> map = new HashMap<String, Object>();
+		CustomerReturnList customerReturnList = new CustomerReturnList();
+		customerReturnList.setbCustomerReturnDate(DateUtils.getThisYearFirstDay());
+		customerReturnList.seteCustomerReturnDate(new Date());
+		List<CustomerReturnList> customerReturnListList = customerReturnListService.list(customerReturnList, Direction.DESC, "customerReturnDate");
+		map.put("rows", customerReturnListList);
+		logService.save(new Log(Log.SEARCH_ACTION,"绩效考核查询"));
+		return map;
+	}
+	
+	/**
+	 * 根据客户退货id查询所有客户退货商品
+	 * 绩效考核
+	 * @param customerReturnListId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/listReturnGoods")
+	@RequiresPermissions(value = "绩效考核")
+	public Map<String, Object> listReturnGoods(Integer customerReturnListId) throws Exception{
+		if(customerReturnListId == null) {
+			return null;
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<CustomerReturnListGoods> customerReturnGoodsListList = customerReturnListGoodsService.listByCustomerReturnListId(customerReturnListId);
+		map.put("rows", customerReturnGoodsListList);
+		logService.save(new Log(Log.SEARCH_ACTION,"绩效考核查询"));
+		return map;
+	}
+	/**
+	 * 列出今年所有的月份退货金额
+	 * 绩效考核
+	 * @param customerReturnListId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/listThisYearAllMonthReturnMoney")
+	@RequiresPermissions(value = "绩效考核")
+	public Map<String, Object> listThisYearAllMonthReturnMoney() throws Exception{
+		List<Map<String, Object>> mapList = new ArrayList<Map<String,Object>>();
+		Map<String, Object> map = new HashMap<String, Object>();
+		/**
+		 * 列出本月
+		 * 
+		 * 列出下一个月
+		 * 
+		 * 直达列出一月份
+		 * 
+		 * 递归
+		 */
+		int i = DateUtils.getThisMonthNumber();
+		int j = 1;
+		do {
+			CustomerReturnList customerReturnList = new CustomerReturnList();
+			customerReturnList.setbCustomerReturnDate(DateUtils.getOneMonthFitstDayFromNumber(i));
+			if(j == 1) {
+				customerReturnList.seteCustomerReturnDate(new Date());
+				j++ ;
+			}else {
+				customerReturnList.seteCustomerReturnDate(DateUtils.getOneMonthLastDayFromNumber(i));
+			}
+			long money = 0;
+			List<CustomerReturnList> customerReturnListList = customerReturnListService.list(customerReturnList, Direction.DESC, "customerReturnDate");
+			for (CustomerReturnList customerReturnList2 : customerReturnListList) {
+				money += customerReturnList2.getAmountPaid();
+			}
+			Map<String, Object> returnGoodsMap = new HashMap<String, Object>();
+			returnGoodsMap.put("month", i + "月份");
+			returnGoodsMap.put("amountPayable", money);
+			mapList.add(returnGoodsMap);
+			i--;
+		}while(i != 0);
+		map.put("rows", mapList);
+		logService.save(new Log(Log.SEARCH_ACTION,"列出今年所有的月份退货金额"));
 		return map;
 	}
 	/**

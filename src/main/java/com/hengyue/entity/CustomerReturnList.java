@@ -31,7 +31,7 @@ public class CustomerReturnList {
 	
 	@ManyToOne
 	@JoinColumn(name = "customerId")
-	private Customer customer;	//供应商
+	private Customer customer;	//客户
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date customerReturnDate; 	//进货日期

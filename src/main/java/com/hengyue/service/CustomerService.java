@@ -57,4 +57,10 @@ public interface CustomerService {
 	 * @return
 	 */
 	public List<Customer> findByName(String name);
+	/**
+	 * 通过代码查询客户
+	 * @param string
+	 * @return
+	 */
+	public Customer findCode(String string);
 }

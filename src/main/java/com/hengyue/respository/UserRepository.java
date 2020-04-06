@@ -20,4 +20,12 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
 	@Query(value = "select * from t_user where user_name = ?1", nativeQuery = true)
 	public User findByUserName(String userName);
 
+	/**
+	 * 通过查找用户真实姓名返回用户实体
+	 * @param userName
+	 * @return
+	 */
+	@Query(value = "select * from t_user where true_name = ?1", nativeQuery = true)
+	public User findByUserTrueName(String userName);
+
 }

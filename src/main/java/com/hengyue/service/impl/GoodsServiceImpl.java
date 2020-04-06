@@ -72,7 +72,6 @@ public class GoodsServiceImpl implements GoodsService {
 	@Override
 	public Long getCount(Goods goods) {
 		Long count = goodsRepository.count(new Specification<Goods>() {
-
 			/**
 			 * 
 			 */

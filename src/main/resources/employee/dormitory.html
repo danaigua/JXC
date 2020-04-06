@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>宿舍管理</title>
+<link rel="stylesheet" type="text/css"
+	href="/static/easyui/themes/default/easyui.css"></link>
+<link rel="stylesheet" type="text/css"
+	href="/static/jquery-easyui-1.3.3/themes/icon.css"></link>
+<script type="text/javascript" src="/static/easyui/jquery.min.js"></script>
+<script type="text/javascript" src="/static/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript"
+	src="/static/jquery-easyui-1.3.3/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript"
+	src="/static/js/admin/employee/dormitory.js"></script>
+</head>
+<body>
+	<table id="dg" title="宿舍信息" class="easyui-datagrid" fitColumns="true"
+		rownumbers="true" singleSelect="true" url="/admin/dormitory/list"
+		fit="true" toolbar="#tb">
+		<thead>
+			<th field="name" width="200" align="center">宿舍名称</th>
+			<th field="employee1Name" width="150" align="center">住宿人员1</th>
+			<th field="employee2Name" width="150" align="center">住宿人员2</th>
+			<th field="employee3Name" width="250" align="center">住宿人员3</th>
+			<th field="employee4Name" width="150" align="center">住宿人员4</th>
+			<th field="employee5Name" width="150" align="center">住宿人员5</th>
+			<th field="employee6Name" width="150" align="center">住宿人员6</th>
+			<th field="employee7Name" width="150" align="center">住宿人员7</th>
+			<th field="employee8Name" width="150" align="center">住宿人员8</th>
+		</thead>
+	</table>
+	<div id="tb">
+		<div>
+			<a href="javascript:openDormitoryDialog()" class="easyui-linkbutton"
+				iconCls="icon-add" plain="true">添加</a> <a
+				href="javascript:openModifyDormitoryDialog()"
+				class="easyui-linkbutton" iconCls="icon-add" plain="true">修改</a> <a
+				href="javascript:deleteDormitory()" class="easyui-linkbutton"
+				iconCls="icon-remove" plain="true">删除</a>
+		</div>
+	</div>
+
+	<div id="dlg" class="easyui-dialog"
+		style="width: 450px; height: 330px; padding: 10px 20px" closed="true"
+		buttons="#dlg-buttons"
+		data-options="onClose:function(){resetValue();}">
+		<form id="fm" method="post">
+			<table cellspacing="8px">
+				<tr>
+					<td valign="top">宿舍名称：</td>
+					<td><input type="text" name="name" id="name" /></td>
+				</tr>
+				<tr>
+					<td valign="top">住宿人员1：</td>
+					<td><input class="easyui-combobox" id="employee1"
+						name="employee1"
+						data-options="
+							url:'/admin/employee/combobox',
+							editable:false,
+							method:'get',
+							valueField:'id',
+							textField:'name',
+							panelHeight:'auto'"></td>
+				</tr>
+				<tr>
+					<td valign="top">住宿人员2：</td>
+					<td><input class="easyui-combobox" id="employee2"
+						name="employee2"
+						data-options="
+							url:'/admin/employee/combobox',
+							editable:false,
+							method:'get',
+							valueField:'id',
+							textField:'name',
+							panelHeight:'auto'"></td>
+				</tr>
+				<tr>
+					<td valign="top">住宿人员3：</td>
+					<td><input class="easyui-combobox" id="employee3"
+						name="employee3"
+						data-options="
+							url:'/admin/employee/combobox',
+							editable:false,
+							method:'get',
+							valueField:'id',
+							textField:'name',
+							panelHeight:'auto'"></td>
+				</tr>
+				<tr>
+					<td valign="top">住宿人员4：</td>
+					<td><input class="easyui-combobox" id="employee4"
+						name="employee4"
+						data-options="
+							url:'/admin/employee/combobox',
+							editable:false,
+							method:'get',
+							valueField:'id',
+							textField:'name',
+							panelHeight:'auto'"></td>
+				</tr>
+				<tr>
+					<td valign="top">住宿人员5：</td>
+					<td><input class="easyui-combobox" id="employee5"
+						name="employee5"
+						data-options="
+							url:'/admin/employee/combobox',
+							editable:false,
+							method:'get',
+							valueField:'id',
+							textField:'name',
+							panelHeight:'auto'"></td>
+				</tr>
+				<tr>
+					<td valign="top">住宿人员5：</td>
+					<td><input class="easyui-combobox" id="employee6"
+						name="employee6"
+						data-options="
+							url:'/admin/employee/combobox',
+							editable:false,
+							method:'get',
+							valueField:'id',
+							textField:'name',
+							panelHeight:'auto'"></td>
+				</tr>
+				<tr>
+					<td valign="top">住宿人员5：</td>
+					<td><input class="easyui-combobox" id="employee7"
+						name="employee7"
+						data-options="
+							url:'/admin/employee/combobox',
+							editable:false,
+							method:'get',
+							valueField:'id',
+							textField:'name',
+							panelHeight:'auto'"></td>
+				</tr>
+				<tr>
+					<td valign="top">住宿人员5：</td>
+					<td><input class="easyui-combobox" id="employee8"
+						name="employee8"
+						data-options="
+							url:'/admin/employee/combobox',
+							editable:false,
+							method:'get',
+							valueField:'id',
+							textField:'name',
+							panelHeight:'auto'"></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="dlg-buttons">
+		<a href="javascript:saveDormitory()" class="easyui-linkbutton"
+			iconCls="icon-ok">保存</a> <a href="javascript:closeDormitoryDialog()"
+			class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+	</div>
+</body>
+</html>

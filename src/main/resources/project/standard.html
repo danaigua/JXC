@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>项目规划</title>
+<link rel="stylesheet" type="text/css"
+	href="/static/jquery-easyui-1.3.3/themes/default/easyui.css"></link>
+<link rel="stylesheet" type="text/css"
+	href="/static/jquery-easyui-1.3.3/themes/icon.css"></link>
+<script type="text/javascript"
+	src="/static/jquery-easyui-1.3.3/jquery.min.js"></script>
+<script type="text/javascript"
+	src="/static/jquery-easyui-1.3.3/jquery.easyui.min.js"></script>
+<script type="text/javascript"
+	src="/static/jquery-easyui-1.3.3/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="/static/js/admin/project/standard.js"></script>
+</head>
+<body>
+	<div class="easyui-layout" data-options="fit:true"
+		style="padding-top: 2px">
+		<div data-options="region:'west',collapsible:false"
+			style="width: 200px" split=true>
+			<ul id="standardTree" class="easyui-tree" style="padding: 10px"></ul>
+			<div style="position: absolute; bottom: 10px; left: 15px">
+				<a href="javascript:openStandrdTypeAddDialog()"
+					class="easyui-linkbutton" iconCls="icon-add">新增</a> <a
+					id="standardTypeDel" href="javascript:deleteStandardType()"
+					class="easyui-linkbutton" disabled=true iconCls="icon-remove">删除</a>
+			</div>
+
+			<!-- 添加一个框来添加标准 -->
+			<div id="newStandardType" class="easyui-dialog"
+				style="width: 450px; height: 150px; padding: 10px 20px"
+				closed="true" buttons="#dlg-standard-type-buttons" title="商品标准类型添加"
+				data-options="onClose:function(){$('#standard-type-name').val('')}">
+				<form method="post">
+					<table cellspacing="8px">
+						<tr>
+							<td>标准类别名称：</td>
+							<td><input id="standard-type-name" type="text"
+								class="easyui-validatebox" style="width: 250px" /> <input
+								type="hidden" name="date" /></td>
+						</tr>
+					</table>
+				</form>
+
+				<!-- 执行标准按钮 -->
+				<div id="dlg-standard-type-buttons">
+					<a href="javascript:saveStandardTypeNewOrChange()"
+						class="easyui-linkbutton" iconCls="icon-ok">保存</a> <a
+						href="javascript:closeStandardTypeNewOrChange()"
+						class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+				</div>
+			</div>
+		</div>
+		<div data-options="region:'center'">
+			<table id="standardDg" title="执行标准类别" class="easyui-datagrid"
+				fitColumns="true" pagination="true" rownumbers="true"
+				singleSelect="true" url="/admin/planCourseStandard/list" fit="true"
+				toolbar="#standardTb">
+				<thead>
+					<th field="name" width="80" align="center">标准名称</th>
+					<th field="standard" width="100" align="center">标准参数</th>
+					<th field="createTimes" width="100" align="center">标准创立时间</th>
+					<th field="explains" width="100" align="center">标准补充说明</th>
+					<th field="remarks" width="100" align="center">备注</th>
+				</thead>
+			</table>
+			<div id="standardTb">
+				<div>
+					<a href="javascript:openStandardAddDialog()"
+						class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a> <a
+						href="javascript:openStandardModifyDialog()"
+						class="easyui-linkbutton" iconCls="icon-edit" plain="true">修改</a>
+					<a href="javascript:deleteStandard()" class="easyui-linkbutton"
+						iconCls="icon-remove" plain="true">删除</a>
+				</div>
+				<div>
+					&nbsp;标准名称：&nbsp;<input type="text" id="standardName" size="20"
+						onkeydown="if(event.keyCode==13) searchGoods()" /> <a
+						href="javascript:searchStandard()" class="easyui-linkbutton"
+						iconCls="icon-search" plain="true">搜索</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- 添加一个框来添加标准 -->
+		<div id="newStandard" class="easyui-dialog"
+			style="width: 600px; height: 550px; padding: 10px 20px" closed="true"
+			buttons="#dlg-standard-buttons"
+			data-options="onClose:function(){resetStandardFormValues()}">
+			<form id="standardForm" method="post">
+				<table cellspacing="8px">
+					<tr>
+						<td>标准名称：</td>
+						<td><input id="standard-name" type="text" name="name"
+							class="easyui-validatebox" style="width: 250px" /> <input
+							type="hidden" name="createTimes" /></td>
+						<input type="hidden" id="typeId" name="typeId" />
+						</td>
+					</tr>
+					<tr>
+						<td>标准参数</td>
+						<td><textarea id="standard-standard" rows="5" cols="40"
+								name="standard"></textarea></td>
+					</tr>
+					<tr>
+						<td>标准说明</td>
+						<td><textarea id="standard-desc" rows="5" cols="40"
+								name="explains"></textarea></td>
+					</tr>
+					<tr>
+						<td>备注</td>
+						<td><textarea id="standard-remarks" rows="5" cols="40"
+								name="remarks"></textarea></td>
+					</tr>
+				</table>
+			</form>
+			<!-- 执行标准按钮 -->
+			<div id="dlg-standard-buttons">
+				<a href="javascript:saveStandardNewOrChange()"
+					class="easyui-linkbutton" iconCls="icon-ok">保存</a> <a
+					href="javascript:closeStandardNewOrChange()"
+					class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+			</div>
+
+		</div>
+
+		<!-- 执行标准按钮 -->
+		<div id="standard-buttons">
+			<a href="javascript:saveStandardSelect()" class="easyui-linkbutton"
+				iconCls="icon-ok">保存</a> <a href="javascript:closeStandardDialog()"
+				class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+		</div>
+
+	</div>
+</body>
+</html>

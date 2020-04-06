@@ -29,6 +29,7 @@ import com.hengyue.service.ReturnListGoodsService;
 import com.hengyue.service.ReturnListService;
 import com.hengyue.service.UserService;
 import com.hengyue.utils.DateUtil;
+import com.hengyue.utils.DateUtils;
 import com.hengyue.utils.StringUtils;
 
 /**
@@ -129,6 +130,41 @@ public class ReturnListAdminController {
 		List<ReturnListGoods> purchaseGoodsListList = returnListGoodsService.listByReturnListId(returnListId);
 		map.put("rows", purchaseGoodsListList);
 		logService.save(new Log(Log.SEARCH_ACTION, "退货单查询"));
+		return map;
+	}
+	/**
+	 * 列出本月的退货单
+	 * @param returnList
+	 * @return
+	 */
+	@RequestMapping("/listThisMonthsReturn")
+	@RequiresPermissions(value = "绩效考核")
+	public Map<String, Object> listThisMonthsReturn() throws Exception {
+		Map<String, Object> map = new HashMap<String, Object>();
+		ReturnList returnList = new ReturnList();
+		returnList.setbReturnDate(DateUtils.getThisMonthsFirstDay());
+		returnList.seteReturnDate(new Date());
+		List<ReturnList> returnListList = returnListService.list(returnList, Direction.DESC, "returnDate");
+		map.put("rows", returnListList);
+		return map;
+	}
+	/**
+	 * 根据退货单id查询所有退货单商品
+	 * 绩效考核里面使用
+	 * @param purchaseListId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/listThisMonthsReturnGoods")
+	@RequiresPermissions(value = "绩效考核")
+	public Map<String, Object> listThisMonthsReturnGoods(Integer returnListId) throws Exception {
+		if (returnListId == null) {
+			return null;
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<ReturnListGoods> purchaseGoodsListList = returnListGoodsService.listByReturnListId(returnListId);
+		map.put("rows", purchaseGoodsListList);
+		logService.save(new Log(Log.SEARCH_ACTION, "绩效考核"));
 		return map;
 	}
 	/**

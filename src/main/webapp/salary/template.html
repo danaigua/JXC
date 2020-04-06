@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>薪资模板</title>
+<link rel="stylesheet" type="text/css"
+	href="/static/easyui/themes/default/easyui.css"></link>
+<link rel="stylesheet" type="text/css"
+	href="/static/jquery-easyui-1.3.3/themes/icon.css"></link>
+<script type="text/javascript" src="/static/easyui/jquery.min.js"></script>
+<script type="text/javascript" src="/static/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/static/jquery-easyui-1.3.3/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript">
+	var url;
+	function searchSalaryTemplate(){
+		$("#dg").datagrid('load',{
+			"name":$("#name").val(),
+		});
+	}
+	
+	function searchSalaryTemplate(){
+		$("#dg").datagrid('load',{
+			"userName":$("#s_userName").val()
+		});
+	}
+	
+	function resetValue(){
+		$("#name").val("");
+		$("#absenteeism").val("");
+		$("#lateFiveMin").val("");
+		$("#lateTenMin").val("");
+		$("#lateThanTenLessThirdTenMin").val("");
+		$("#lateThanThirdTenMin").val("");
+		$("#leavetimeOneMin").val("");
+		$("#leavetimeOneMin").val("");
+		$("#overtime").val("");
+		$("#meal").val("");
+		$("#putUp").val("");
+		$("#remarks").val("");
+	}
+	
+	function closeSalaryTemplateDialog(){
+		$("#dlg").dialog("close");
+		resetValue();
+	}
+	
+	function saveSalaryTemplate(){
+		$("#fm").form("submit",{
+			url:url,
+			onSubmit:function(){
+				return $(this).form("validate");
+			},
+			success:function(result){
+				var result=eval('('+result+')');
+				if(result.success){
+					$.messager.alert("系统提示","保存成功！");
+					resetValue();
+					$("#dlg").dialog("close");
+					$("#dg").datagrid("reload");
+				}else{
+					$.messager.alert("系统提示",result.errorInfo);
+				}
+			}
+		});
+	}
+	
+	function openSalaryTemplateAddDialog(){
+		$("#dlg").dialog("open").dialog("setTitle","添加薪资模板信息");
+		url="/admin/salary/save";
+	}
+	
+	function openSalaryTemplateModifyDialog(){
+		var selectedRows=$("#dg").datagrid("getSelections");
+		if(selectedRows.length!=1){
+			$.messager.alert("系统提示","请选择一条要修改的数据！");
+			return;
+		}
+		var row=selectedRows[0];
+		$("#dlg").dialog("open").dialog("setTitle","修改薪资模板信息");
+		$("#fm").form("load",row);
+		$("#userName").attr("readonly","readonly");
+		url="/admin/salary/save?id="+row.id;
+	}
+	
+	function deleteSalaryTemplate(){
+		var selectedRows=$("#dg").datagrid("getSelections");
+		if(selectedRows.length!=1){
+			$.messager.alert("系统提示","请选择一条要删除的数据！");
+			return;
+		}
+		var id=selectedRows[0].id;
+		$.messager.confirm("系统提示","您确定要删除这条数据吗?",function(r){
+			if(r){
+				$.post("/admin/salary/delete",{id:id},function(result){
+					if(result.success){
+						$.messager.alert("系统提示","数据已成功删除！");
+						$("#dg").datagrid("reload");
+					}else{
+						$.messager.alert("系统提示",result.errorInfo);
+					}
+				},"json");
+			}
+		});
+	}
+	
+	//添加双击事件
+	$(document).ready(function() {
+		$("#dg").datagrid({
+			onDblClickRow:function(index,row){
+				$("#dlg").dialog("open").dialog("setTitle","修改薪资模板信息");
+				$("#fm").form("load",row);
+				$("#userName").attr("readonly","readonly");
+				url="/admin/salary/save?id="+row.id;
+			}
+		});
+		
+	});
+</script>
+</head>
+<body>
+	<table id="dg" class="easyui-datagrid"
+	fitColumns="true" pagination="true" rownumbers="true" singleSelect="true"
+	url="/admin/salary/list" fit="true" toolbar="#tb">
+		<thead>
+			<th field="id" width="100" align="center">编号</th>
+			<th field="name" width="250" align="center">模板名称</th>
+			<th field="absenteeism" width="250" align="center">矿工罚款</th>
+			<th field="lateFiveMin" width="250" align="center">迟到5分钟</th>
+			<th field="lateTenMin" width="250" align="center">迟到5~10分钟</th>
+			<th field="lateThanTenLessThirdTenMin" width="250" align="center">迟到10~30分钟</th>
+			<th field="lateThanThirdTenMin" width="250" align="center">迟到超过30分钟</th>
+			<th field="leavetimeOneMin" width="250" align="center">早退1分钟</th>
+			<th field="leavetimeTwoMin" width="250" align="center">早退2分钟</th>
+			<th field="hourSalary" width="250" align="center">时薪</th>
+			<th field="overtime" width="250" align="center">加班费用</th>
+			<!-- <th field="meal" width="250" align="center">报餐费用</th>
+			<th field="putUp" width="250" align="center">住宿费用</th> -->
+			<th field="remarks" width="250" align="center">备注</th>
+		</thead>
+	</table>
+	<div id="tb">
+		<div>
+			<a href="javascript:openSalaryTemplateAddDialog()" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+			<a href="javascript:openSalaryTemplateModifyDialog()" class="easyui-linkbutton" iconCls="icon-edit" plain="true">修改</a>
+			<a href="javascript:deleteSalaryTemplate()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
+		</div>
+		<fieldset>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;模板名称：&nbsp;
+			<input type="text" id="name" size="20" onkeydown="if(event.keyCode==13) searchSalaryTemplate()"/>
+			&nbsp;&nbsp;<a href="javascript:searchSalaryTemplate()" class="easyui-linkbutton" iconCls="icon-search" plain="true">搜索</a>
+		</fieldset>
+	</div>
+	
+	<div id="dlg" class="easyui-dialog" style="width: 650px;height: 540px;padding: 10px 20px"
+	closed="true" buttons="#dlg-buttons" data-options="onClose:function(){resetValue()}">
+		<form id="fm" method="post">
+			<table cellspacing="8px">
+				<tr>
+					<td>模板名称：</td>
+					<td>
+						<input type="text" id="templateName" name="name" class="easyui-validatebox"  style="width: 250px" />
+					</td>
+				</tr>
+				<tr>
+					<td>矿工罚款（按小时算）：</td>
+					<td>
+						<input type="number" id="absenteeism" name="absenteeism" class="easyui-validatebox"  style="width: 250px"/>
+					</td>
+				</tr>
+				<tr>
+					<td>迟到迟到5分钟内罚款：</td>
+					<td>
+						<input type="number" id="lateFiveMin" name="lateFiveMin" class="easyui-validatebox"  style="width: 250px"/>
+					</td>
+				</tr>
+				<tr>
+					<td>迟到5~10分钟内罚款：</td>
+					<td>
+						<input type="number" id="lateTenMin" name="lateTenMin" class="easyui-validatebox"  style="width: 250px"/>
+					</td>
+				</tr>
+				<tr>
+					<td>迟到10~30分钟内罚款：</td>
+					<td>
+						<input type="number" id="lateThanTenLessThirdTenMin" name="lateThanTenLessThirdTenMin" class="easyui-validatebox"  style="width: 250px"/>
+					</td>
+				</tr>
+				<tr>
+					<td>迟到超过30分钟罚款：</td>
+					<td>
+						<input type="number" id="lateThanThirdTenMin" name="lateThanThirdTenMin" class="easyui-validatebox"  style="width: 250px"/>
+					</td>
+				</tr>
+				<tr>
+					<td>早退1分钟罚款：</td>
+					<td>
+						<input type="number" id="leavetimeOneMin" name="leavetimeOneMin" class="easyui-validatebox"  style="width: 250px"/>
+					</td>
+				</tr>
+				<tr>
+					<td>时薪：</td>
+					<td>
+						<input type="number" id="hourSalary" name="hourSalary" class="easyui-validatebox"  style="width: 250px"/>
+					</td>
+				</tr>
+				<tr>
+					<td>早退2分钟罚款：</td>
+					<td>
+						<input type="number" id="leavetimeTwoMin" name="leavetimeTwoMin" class="easyui-validatebox"  style="width: 250px"/>
+					</td>
+				</tr>
+				<tr>
+					<td>加班费用（按小时算）：</td>
+					<td>
+						<input type="number" id="overtime" name="overtime" class="easyui-validatebox"  style="width: 250px"/>
+					</td>
+				</tr>
+				<!-- <tr>
+					<td>报餐费用（按月算）：</td>
+					<td>
+						<input type="number" id="meal" name="meal" class="easyui-validatebox"  style="width: 250px"/>
+					</td>
+				</tr>
+				<tr>
+					<td>住宿费用（按月算）：</td>
+					<td>
+						<input type="number" id="putUp" name="putUp" class="easyui-validatebox"  style="width: 250px"/>
+					</td>
+				</tr> -->
+				<tr>
+					<td valign="top">备注：</td>
+					<td>
+						<textarea rows="5" cols="40" id="remarks" name="remarks"></textarea>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div id="dlg-buttons">
+		<a href="javascript:saveSalaryTemplate()" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
+		<a href="javascript:closeSalaryTemplateDialog()" class="easyui-linkbutton" iconCls="icon-cancel" >关闭</a>
+	</div>
+</body>
+</html>

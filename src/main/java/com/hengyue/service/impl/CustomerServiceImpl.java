@@ -104,4 +104,10 @@ public class CustomerServiceImpl implements CustomerService {
 		return customerRepository.findByName(name);
 	}
 
+	@Override
+	public Customer findCode(String string) {
+		// TODO Auto-generated method stub
+		return customerRepository.findCode(string);
+	}
+
 }

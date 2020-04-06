@@ -10,7 +10,7 @@ import com.hengyue.entity.Goods;
 
 /**
  * 商品持久层接口
- * 
+ *
  * @author 章家宝
  *
  */
